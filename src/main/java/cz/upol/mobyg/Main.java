@@ -24,8 +24,7 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 
 import java.awt.image.*;
-
-import java.util.List;
+import java.io.File;
 
 import static cz.upol.mobyg.utils.ColorUtils.*;
 import static cz.upol.mobyg.utils.ImageUtils.saveImage;
@@ -100,14 +99,17 @@ public class Main extends Application {
 
                     while (true) {
                         grabbedFrame = grabber.grab();
-                        Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
+                       Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
                         bufferedImage = java2DFrameConverter.convert(grabbedFrame);
                         image = SwingFXUtils.toFXImage(bufferedImage, null);
 
-                        List<ColorHSV> colorHSVs = getPixelsHSV(image);
-                        List<ColorHSV> filteredHSVimage = centerOfGravity.filterPoints(colorHSVs, redHSV, greenHSV, blueHSV);
-                        Image filteredRGBimage = getPixelsRGB(filteredHSVimage);
-                        Platform.runLater(() -> imageView.setImage(filteredRGBimage));
+                        ColorHSV[][] colorHSVs = getPixelsHSV(image);
+                        Color[][] filteredRGBarray = centerOfGravity.filterPoints(colorHSVs, redHSV, greenHSV, blueHSV);
+
+
+                    Color[][] erodedRGBarray = centerOfGravity.erosion(filteredRGBarray);
+                    Image erodedTest = getPixelsRGB(erodedRGBarray);
+                        Platform.runLater(() -> imageView.setImage(erodedTest));
                     }
 
 
@@ -157,6 +159,7 @@ public class Main extends Application {
                 grabbedFrame = grabber.grab();
                 Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
                 bufferedImage = java2DFrameConverter.convert(grabbedFrame);
+                image = SwingFXUtils.toFXImage(bufferedImage, null);
                 testImage = SwingFXUtils.toFXImage(bufferedImage, null);
                 imageView.setImage(testImage);
                 //saveImage(image.getPixelReader(), "testGrab.jpg");

@@ -7,9 +7,6 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Medel on 02/07/2015.
  */
@@ -17,32 +14,60 @@ public final class ColorUtils {
     private ColorUtils() {
     }
 
-    public static List<ColorHSV> getPixelsHSV(Image imageRGB) {
+    public static Color[][] arrayHSVtoRGB(ColorHSV[][] hsvArray) {
+        Color[][] result = new Color[hsvArray.length][hsvArray[0].length];
+
+        for (int i = 0; i < hsvArray[0].length; i++) {
+            for (int j = 0; j < hsvArray.length; j++) {
+                result[j][i] = convertHSVtoRGB(hsvArray[j][i]);
+            }
+        }
+        return result;
+    }
+
+    public static ColorHSV[][] getPixelsHSV(Image imageRGB) {
         PixelReader pixelReader = imageRGB.getPixelReader();
         double imageHeight = imageRGB.getHeight();
         double imageWidth = imageRGB.getWidth();
-        List<ColorHSV> result = new ArrayList<>();
+        ColorHSV[][] result = new ColorHSV[(int) imageWidth][(int) imageHeight];
 
         for (int i = 0; i < imageHeight; i++) {
             for (int j = 0; j < imageWidth; j++) {
                 Color colorRGB = pixelReader.getColor(j, i);
                 ColorHSV colorHSV = convertRGBtoHSV(colorRGB);
-                result.add(colorHSV);
+                result[j][i] = colorHSV;
             }
         }
         return result;
     }
 
     // TODO udelat z List<ColorHSV> strukturu "imageHSV" s promennyma Data(list ColorHSV), width a height
-    public static Image getPixelsRGB(List<ColorHSV> imageHSV) {
-        WritableImage result = new WritableImage(640, 480);
+    public static Image getPixelsRGB(ColorHSV[][] imageHSV) {
+        int imageHeight = imageHSV[0].length;
+        int imageWidth = imageHSV.length;
+        WritableImage result = new WritableImage(imageWidth, imageHeight);
         PixelWriter pixelWriter = result.getPixelWriter();
 
-        for (int i = 0; i < 480; i++) {
-            int x = i * 640;
-            for (int j = 0; j < 640; j++) {
-                ColorHSV colorHSV = imageHSV.get(x + j);
+        for (int i = 0; i < imageHeight; i++) {
+            for (int j = 0; j < imageWidth; j++) {
+                ColorHSV colorHSV = imageHSV[j][i];
                 Color colorRGB = convertHSVtoRGB(colorHSV);
+                pixelWriter.setColor(j, i, colorRGB);
+            }
+        }
+
+        return result;
+    }
+
+    public static Image getPixelsRGB(Color[][] arrayRGB) {
+        int imageHeight = arrayRGB[0].length;
+        int imageWidth = arrayRGB.length;
+        WritableImage result = new WritableImage(imageWidth, imageHeight);
+        PixelWriter pixelWriter = result.getPixelWriter();
+
+        for (int i = 0; i < imageHeight; i++) {
+            for (int j = 0; j < imageWidth; j++) {
+                Color colorRGB = arrayRGB[j][i];
                 pixelWriter.setColor(j, i, colorRGB);
             }
         }
