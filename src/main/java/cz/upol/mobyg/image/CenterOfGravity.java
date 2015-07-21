@@ -3,11 +3,22 @@ package cz.upol.mobyg.image;
 import cz.upol.mobyg.color.ColorHSV;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
+
 /**
  * Created by Medel on 02/07/2015.
  */
 public class CenterOfGravity {
 
+    private Point redPosition;
+    private Point greenPostion;
+    private Point bluePostion;
+
+    public CenterOfGravity() {
+        this.redPosition = new Point(320, 240);
+        this.greenPostion = new Point();
+        this.bluePostion = new Point();
+    }
 
     public Color[][] getCenterOfGravity(Color[][] rgbArray) {
         int height = rgbArray[0].length;
@@ -49,15 +60,22 @@ public class CenterOfGravity {
             }
         }
 
-        if (redAccumN != 0)
+        if (redAccumN != 0) {
             result[redAccumX / redAccumN][redAccumY / redAccumN] = Color.rgb(255, 0, 0);
-        if (greenAccumN != 0)
+            redPosition.setLocation(redAccumX / redAccumN, redAccumY / redAccumN);
+        }
+        if (greenAccumN != 0) {
             result[greenAccumX / greenAccumN][greenAccumY / greenAccumN] = Color.rgb(0, 255, 0);
-        if (blueAccumN != 0)
+            greenPostion.setLocation(greenAccumX / greenAccumN, greenAccumY / greenAccumN);
+        }
+        if (blueAccumN != 0) {
             result[blueAccumX / blueAccumN][blueAccumY / blueAccumN] = Color.rgb(0, 0, 255);
+            bluePostion.setLocation(blueAccumX / blueAccumN, blueAccumY / blueAccumN);
+        }
 
         return result;
     }
+
 
     public Color[][] erosion(Color[][] rgbArray) {
         int height = rgbArray[0].length;
@@ -104,8 +122,8 @@ public class CenterOfGravity {
 
     public Color[][] filterPoints(ColorHSV[][] hsvArray, ColorHSV redHSV, ColorHSV greenHSV, ColorHSV blueHSV) {
         Color[][] result = new Color[hsvArray.length][hsvArray[0].length];
-        //List<ColorHSV> result = new ArrayList<>();
         double h, s, v;
+
         int redHue = (int) (redHSV.getHue() * 360);
         int redSat = (int) (redHSV.getSaturation() * 360) - 40;
         int redVal = (int) (redHSV.getValue() * 360) - 40;
@@ -148,5 +166,17 @@ public class CenterOfGravity {
         distance = Math.min(firstDistance, secondDistance);
 
         return distance <= range;
+    }
+
+    public Point getRedPosition() {
+        return redPosition;
+    }
+
+    public Point getGreenPostion() {
+        return greenPostion;
+    }
+
+    public Point getBluePostion() {
+        return bluePostion;
     }
 }
