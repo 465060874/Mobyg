@@ -99,19 +99,20 @@ public class Main extends Application {
 
                     while (true) {
                         grabbedFrame = grabber.grab();
-                       Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
+                        Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
                         bufferedImage = java2DFrameConverter.convert(grabbedFrame);
                         image = SwingFXUtils.toFXImage(bufferedImage, null);
 
                         ColorHSV[][] colorHSVs = getPixelsHSV(image);
+
                         Color[][] filteredRGBarray = centerOfGravity.filterPoints(colorHSVs, redHSV, greenHSV, blueHSV);
+                        Color[][] erodedRGBarray = centerOfGravity.erosion(filteredRGBarray);
+                        Color[][] centeredRGBArray = centerOfGravity.getCenterOfGravity(erodedRGBarray);
 
 
-                    Color[][] erodedRGBarray = centerOfGravity.erosion(filteredRGBarray);
-                    Image erodedTest = getPixelsRGB(erodedRGBarray);
+                        Image erodedTest = getPixelsRGB(centeredRGBArray);
                         Platform.runLater(() -> imageView.setImage(erodedTest));
                     }
-
 
 
                 } catch (Exception e) {
@@ -148,6 +149,7 @@ public class Main extends Application {
         }
 
     }
+
     //TODO predelat -> nema parametr a vraci image
     private void grabFrame(ImageView imageView) {
         //final OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);
@@ -156,13 +158,13 @@ public class Main extends Application {
         BufferedImage bufferedImage;
         try {
 
-                grabbedFrame = grabber.grab();
-                Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
-                bufferedImage = java2DFrameConverter.convert(grabbedFrame);
-                image = SwingFXUtils.toFXImage(bufferedImage, null);
-                testImage = SwingFXUtils.toFXImage(bufferedImage, null);
-                imageView.setImage(testImage);
-                //saveImage(image.getPixelReader(), "testGrab.jpg");
+            grabbedFrame = grabber.grab();
+            Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
+            bufferedImage = java2DFrameConverter.convert(grabbedFrame);
+            image = SwingFXUtils.toFXImage(bufferedImage, null);
+            testImage = SwingFXUtils.toFXImage(bufferedImage, null);
+            imageView.setImage(testImage);
+            //saveImage(image.getPixelReader(), "testGrab.jpg");
         } catch (Exception e) {
             e.printStackTrace();
         }

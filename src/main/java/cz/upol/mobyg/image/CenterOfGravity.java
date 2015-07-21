@@ -8,6 +8,56 @@ import javafx.scene.paint.Color;
  */
 public class CenterOfGravity {
 
+
+    public Color[][] getCenterOfGravity(Color[][] rgbArray) {
+        int height = rgbArray[0].length;
+        int width = rgbArray.length;
+
+        Color[][] result = new Color[width][height];
+
+        int redAccumX = 0;
+        int redAccumY = 0;
+        int redAccumN = 0;
+
+        int greenAccumX = 0;
+        int greenAccumY = 0;
+        int greenAccumN = 0;
+
+        int blueAccumX = 0;
+        int blueAccumY = 0;
+        int blueAccumN = 0;
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+
+                if ((int) (rgbArray[j][i].getRed() * 255) == 255) {
+                    redAccumX += j;
+                    redAccumY += i;
+                    redAccumN++;
+                }
+                if ((int) (rgbArray[j][i].getGreen() * 255) == 255) {
+                    greenAccumX += j;
+                    greenAccumY += i;
+                    greenAccumN++;
+                }
+                if ((int) (rgbArray[j][i].getBlue() * 255) == 255) {
+                    blueAccumX += j;
+                    blueAccumY += i;
+                    blueAccumN++;
+                }
+                result[j][i] = Color.rgb(0, 0, 0);
+            }
+        }
+        if (redAccumN != 0)
+            result[redAccumX / redAccumN][redAccumY / redAccumN] = Color.rgb(255, 0, 0);
+        if (greenAccumN != 0)
+            result[greenAccumX / greenAccumN][greenAccumY / greenAccumN] = Color.rgb(0, 255, 0);
+        if (blueAccumN != 0)
+            result[blueAccumX / blueAccumN][blueAccumY / blueAccumN] = Color.rgb(0, 0, 255);
+
+        return result;
+    }
+
     public Color[][] erosion(Color[][] rgbArray) {
         int height = rgbArray[0].length;
         int width = rgbArray.length;
@@ -76,13 +126,13 @@ public class CenterOfGravity {
                 v = hsv.getValue() * 360;
 
                 if ((isColorInInterval(redHue, 15, h)) && (s > redSat) && (v > redVal))
-                    result[j][i] = Color.rgb(255,0,0);
+                    result[j][i] = Color.rgb(255, 0, 0);
                 else if ((isColorInInterval(greenHue, 15, h)) && (s > greenSat) && (v > greenVal))
-                    result[j][i] = Color.rgb(0,255,0);
+                    result[j][i] = Color.rgb(0, 255, 0);
                 else if ((isColorInInterval(blueHue, 15, h)) && (s > blueSat) && (v > blueVal))
-                    result[j][i] = Color.rgb(0,0,255);
+                    result[j][i] = Color.rgb(0, 0, 255);
                 else
-                    result[j][i] = Color.rgb(0,0,0);
+                    result[j][i] = Color.rgb(0, 0, 0);
             }
         }
         return result;
