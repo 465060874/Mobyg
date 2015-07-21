@@ -48,6 +48,7 @@ public class CenterOfGravity {
                 result[j][i] = Color.rgb(0, 0, 0);
             }
         }
+
         if (redAccumN != 0)
             result[redAccumX / redAccumN][redAccumY / redAccumN] = Color.rgb(255, 0, 0);
         if (greenAccumN != 0)
