@@ -155,15 +155,19 @@ public class Main extends Application {
 
                         ColorHSV[][] colorHSVs = getPixelsHSV(image);
 
-                        Point redPoint = centerOfGravity.getRedPosition();
+                        Point redPoint = centerOfGravity.getRedPosition();                   // before
                         int redXcoord = (int)redPoint.getX();
+                        int redYcoord = (int)redPoint.getY();
 
                         Color[][] filteredRGBarray = centerOfGravity.filterPoints(colorHSVs, redHSV, greenHSV, blueHSV);
                         Color[][] erodedRGBarray = centerOfGravity.erosion(filteredRGBarray);
                         Color[][] centeredRGBArray = centerOfGravity.getCenterOfGravity(erodedRGBarray);
 
-                        int angleToRotate = (int)(redXcoord + redPoint.getX() - 640) / 5;
-                        Platform.runLater(() -> rotateX.setAngle(rotateX.getAngle() + angleToRotate));
+                        int angleToRotateY = (int) (redXcoord - redPoint.getX());                    //after
+                        int angleToRotateX = (int) (redYcoord - redPoint.getY());
+
+                        Platform.runLater(() -> rotateY.setAngle(rotateY.getAngle() + angleToRotateY));
+                        Platform.runLater(() -> rotateX.setAngle(rotateX.getAngle() + angleToRotateX));
 
                         Image erodedTest = getPixelsRGB(centeredRGBArray);
                         Platform.runLater(() -> imageView.setImage(erodedTest));
